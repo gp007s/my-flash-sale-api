@@ -9,18 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FlashSaleApplication {
 
-	@GetMapping("/message")
-	public String getMessage(){
-		System.out.println("#######Govind Prasad Sahu########");
+	@GetMapping("/")
+	public String health(){
+		System.out.println("FlashSaleApi is healthy!!!");
 		return "FlashSaleApi is healthy!!!";
 	}
-	@GetMapping("/admin")
-	public String setTheQuantityOfItem(){
-		System.out.println("#######Quality Set Now########");
-		return "Quantity Set now--> Raghupati raghav rajaram!!!";
-	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(FlashSaleApplication.class, args);
 	}
-
 }
