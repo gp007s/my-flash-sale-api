@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FlashSaleApplication {
 
-	@GetMapping("/health")
-	public String checkAppHealth(){
+	@GetMapping("/message")
+	public String getMessage(){
 		return "FlashSaleApi is healthy!!!";
 	}
 	public static void main(String[] args) {
