@@ -11,6 +11,7 @@ public class FlashSaleApplication {
 
 	@GetMapping("/message")
 	public String getMessage(){
+		System.out.println("#######Govind Prasad Sahu########");
 		return "FlashSaleApi is healthy!!!";
 	}
 	public static void main(String[] args) {
