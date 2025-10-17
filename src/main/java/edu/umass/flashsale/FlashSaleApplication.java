@@ -17,7 +17,7 @@ public class FlashSaleApplication {
 	@GetMapping("/admin")
 	public String setTheQuantityOfItem(){
 		System.out.println("#######Quality Set Now########");
-		return "Quantity Set now!!!";
+		return "Quantity Set now--> Test1!!!";
 	}
 	public static void main(String[] args) {
 		SpringApplication.run(FlashSaleApplication.class, args);
