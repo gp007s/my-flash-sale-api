@@ -14,6 +14,11 @@ public class FlashSaleApplication {
 		System.out.println("#######Govind Prasad Sahu########");
 		return "FlashSaleApi is healthy!!!";
 	}
+	@GetMapping("/admin")
+	public String setTheQuantityOfItem(){
+		System.out.println("#######Quality Set Now########");
+		return "Quantity Set now!!!";
+	}
 	public static void main(String[] args) {
 		SpringApplication.run(FlashSaleApplication.class, args);
 	}
