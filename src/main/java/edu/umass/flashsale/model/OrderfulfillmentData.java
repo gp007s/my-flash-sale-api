@@ -11,6 +11,8 @@ public class OrderfulfillmentData implements Serializable {
     @GeneratedValue
     private Long id;
     private String orderId;
+    private String itemId;
+    private String itemDetails;
     private int quantity;
     private String userName;
     private String emailAddress;
@@ -19,8 +21,11 @@ public class OrderfulfillmentData implements Serializable {
 
     public OrderfulfillmentData() {
     }
-    public OrderfulfillmentData(String orderId, int quantity, String userName, String emailAddress, long paymentAmount, String fulfillmentStatus) {
+
+    public OrderfulfillmentData(String orderId, String itemId, String itemDetails, int quantity, String userName, String emailAddress, long paymentAmount, String fulfillmentStatus) {
         this.orderId = orderId;
+        this.itemId = itemId;
+        this.itemDetails = itemDetails;
         this.quantity = quantity;
         this.userName = userName;
         this.emailAddress = emailAddress;

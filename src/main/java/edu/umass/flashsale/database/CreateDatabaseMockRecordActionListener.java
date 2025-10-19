@@ -15,19 +15,8 @@ public class CreateDatabaseMockRecordActionListener {
     ApplicationListener<ApplicationReadyEvent> basicsApplicationListener(OrderfulfillmentRepository repository) {
 
         return event->repository
-                .saveAll(Stream.of("A", "B", "C").map(name -> new OrderfulfillmentData("order123455", 3,"Govind","gp007s@gmail.com", 200l,"FULFILLED")).collect(Collectors.toList()))
+                .saveAll(Stream.of("A", "B", "C").map(name -> new OrderfulfillmentData("order123455","item1","TV", 3,"Govind","gp007s@gmail.com", 200l,"FULFILLED")).collect(Collectors.toList()))
                 .forEach(System.out::println);
     }
 
-    /**
-     *   public OrderfulfillmentData(Long id, String orderId, int quantity, String userName, String emailAddress, long paymentAmount, String fulfillmentStatus) {
-     *         this.orderId = orderId;
-     *         this.quantity = quantity;
-     *         this.userName = userName;
-     *         this.emailAddress = emailAddress;
-     *         this.paymentAmount = paymentAmount;
-     *         this.fulfillmentStatus = fulfillmentStatus;
-     *     }
-     *
-     */
 }

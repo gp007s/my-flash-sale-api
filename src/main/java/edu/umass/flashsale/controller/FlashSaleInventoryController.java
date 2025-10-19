@@ -15,6 +15,7 @@ public class FlashSaleInventoryController {
 
     @Autowired
     RedisService redisService;
+
     @Autowired
     OrderService orderService;
 
@@ -30,10 +31,14 @@ public class FlashSaleInventoryController {
             if(result==-1){
                 purchaseResponse.setOrderNumber("OUT-OF-STOCK");
             } else {
-                //ASYNC CALL to start the fulfillment
-                // AzureEventHubMessageSender azureEventHubMessageSender = new AzureEventHubMessageSender();
                 UUID uuid = UUID.randomUUID();
                 String uuidAsString = uuid.toString();
+                String fulfillmentStatus = "PENDING";
+                //ASYNC CALL to start the fulfillment
+                // AzureEventHubMessageSender azureEventHubMessageSender = new AzureEventHubMessageSender();
+               // boolean fulfillDBStatus = orderService.processOrder(purchaseRequest,uuidAsString,fulfillmentStatus);
+                //System.out.println("### Logging the fulfillmentStatus :" + fulfillDBStatus);
+                orderService.processOrder(purchaseRequest,uuidAsString,fulfillmentStatus);
                 purchaseResponse.setOrderNumber(uuidAsString);
                 purchaseResponse.setOrderStatus("ORDER-COMPLETED");
                 purchaseResponse.setFulfillmentStatus("PENDING");
@@ -45,6 +50,7 @@ public class FlashSaleInventoryController {
         }
        return purchaseResponse;
     }
+
 
     @GetMapping("/order")
     public long getOrderDetails(@RequestParam String orderId) {
