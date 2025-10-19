@@ -36,7 +36,7 @@ public class RedisService {
         return redisTemplate.opsForValue().get("stock:"+key);
     }
 
-    public void increment(String key, int amount) {
-        redisTemplate.opsForValue().increment(key, amount);
+    public void decrement(String key, int amount) {
+        redisTemplate.opsForValue().decrement(key, amount);
     }
 }

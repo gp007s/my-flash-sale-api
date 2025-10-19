@@ -1,10 +1,12 @@
 package edu.umass.flashsale.controller;
 
+import edu.umass.flashsale.communication.CommunicationProcessor;
 import edu.umass.flashsale.model.PurchaseRequest;
 import edu.umass.flashsale.model.PurchaseResponse;
 import edu.umass.flashsale.service.OrderService;
 import edu.umass.flashsale.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
@@ -19,6 +21,9 @@ public class FlashSaleInventoryController {
     @Autowired
     OrderService orderService;
 
+    @Autowired
+    CommunicationProcessor communicationProcessor;
+
     @PostMapping("/order")
     public @ResponseBody PurchaseResponse orderItem(@RequestBody PurchaseRequest purchaseRequest) {
         PurchaseResponse purchaseResponse = new PurchaseResponse();
@@ -28,18 +33,17 @@ public class FlashSaleInventoryController {
             String redisKey = "stock:"+itemName;
 
             long result = redisService.checkItemAvailabilityAndReserve(redisKey, maxItemQuantityOnSale);
-            if(result==-1){
+            if(result<1){
                 purchaseResponse.setOrderNumber("OUT-OF-STOCK");
             } else {
                 UUID uuid = UUID.randomUUID();
                 String uuidAsString = uuid.toString();
-                String fulfillmentStatus = "PENDING";
+                purchaseResponse.setOrderNumber("ORD"+uuidAsString);
                 //ASYNC CALL to start the fulfillment
                 // AzureEventHubMessageSender azureEventHubMessageSender = new AzureEventHubMessageSender();
                // boolean fulfillDBStatus = orderService.processOrder(purchaseRequest,uuidAsString,fulfillmentStatus);
                 //System.out.println("### Logging the fulfillmentStatus :" + fulfillDBStatus);
-                orderService.processOrder(purchaseRequest,uuidAsString,fulfillmentStatus);
-                purchaseResponse.setOrderNumber(uuidAsString);
+                processOrderAndEmail(purchaseRequest, uuidAsString, purchaseResponse);
                 purchaseResponse.setOrderStatus("ORDER-COMPLETED");
                 purchaseResponse.setFulfillmentStatus("PENDING");
             }
@@ -51,6 +55,13 @@ public class FlashSaleInventoryController {
        return purchaseResponse;
     }
 
+    private void processOrderAndEmail(PurchaseRequest purchaseRequest, String uuidAsString, PurchaseResponse purchaseResponse) {
+        CompletableFuture<Boolean> future = orderService.processOrder(purchaseRequest, uuidAsString,"COMPLETED");
+        System.out.println("Processing the order fulfillment !!! ");
+        // Process the result when it's available
+        future.thenAccept(isFulfilled ->  communicationProcessor.sendEmailCommunication(isFulfilled, purchaseResponse.getOrderNumber(),
+                purchaseRequest.getEmailAddress(), purchaseRequest.getItemName()));
+    }
 
     @GetMapping("/order")
     public long getOrderDetails(@RequestParam String orderId) {
